@@ -8,23 +8,27 @@ import {
   Autocomplete,
 } from "@mantine/core";
 
-interface ItemProps extends SelectItemProps {
-  color: MantineColor;
-  description: string;
-  country: string;
-}
+// interface ItemProps extends SelectItemProps {
+//   color: MantineColor;
+//   description: string;
+//   country: string;
+// }
 
-export const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(
-  ({ description, value, country, ...others }: ItemProps, ref) => (
-    <div ref={ref} {...others}>
-      <Group noWrap>
-        <div>
-          <Text>{value}</Text>
-          <Text size="xs" color="dimmed">
-            {description} | {country}
-          </Text>
-        </div>
-      </Group>
-    </div>
-  )
-);
+//  export const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(
+//   ({ description, value, country, ...others }: ItemProps, ref) => (
+//     <div ref={ref} {...others}>
+//       <Group noWrap>
+//         <div>
+//           <Text>{value}</Text>
+//           <Text size="xs" color="dimmed">
+//             {description} | {country}
+//           </Text>
+//         </div>
+//       </Group>
+//     </div>
+//   )
+// );
+
+export default function Idk() {
+  return''
+}

@@ -34,7 +34,17 @@ import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Item } from "../stockListItem/Item";
 import dataApi from "../../api/twelwedata";
-import { AutoCompleteItem } from "../autocomplete_item/Option";
+
+
+/*AutoComplete Imports */
+import { forwardRef } from "react";
+import {
+
+  MantineColor,
+  SelectItemProps,
+  
+} from "@mantine/core";
+
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -83,6 +93,28 @@ const useStyles = createStyles((theme) => ({
   },
 }));
 
+interface ItemProps extends SelectItemProps {
+  color: MantineColor;
+  description: string;
+  country: string;
+}
+
+ export const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(
+  ({ description, value, country, ...others }: ItemProps, ref) => (
+    <div ref={ref} {...others}>
+      <Group noWrap>
+        <div>
+          <Text>{value}</Text>
+          <Text size="xs" color="dimmed">
+            {description} | {country}
+          </Text>
+        </div>
+      </Group>
+    </div>
+  )
+);
+
+AutoCompleteItem.displayName = 'AutoCompleteItem';
 interface Stock {
   country: string;
   currency: string;
