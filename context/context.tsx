@@ -1,9 +1,11 @@
 "use client";
 import { auth, db } from "@/firebase";
 import {
+  User,
   UserCredential,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { child, get, ref, set } from "firebase/database";
 import {
@@ -90,6 +92,12 @@ export const AppProvider = ({ children }: any) => {
       " ",
       ""
     )}`;
+    await updateProfile(auth.currentUser as User, { displayName: username, photoURL:`https://api.dicebear.com/6.x/identicon/svg?seed=${username.replace(
+      " ",
+      ""
+    )}` }).catch(
+        (err) => console.log(err)
+      );
 
     set(ref(db, "users/" + userCredentials.user.uid), {
       username,

@@ -8,11 +8,11 @@ export default function Home() {
 
   return (
     <div>
-      {/* {loggedIn ? (
+      {loggedIn ? (
         <div className="h-96">
           <StockChart />
         </div>
-      ) : null} */}
+      ) : null}
     </div>
   );
 }

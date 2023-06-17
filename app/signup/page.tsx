@@ -98,7 +98,7 @@ const SignUp = () => {
         formData?.confirmPassword) !== ""
     ) {
       try {
-        signUpUser(
+       await signUpUser(
           formData?.email as string,
           formData?.password as string,
           formData?.username as string

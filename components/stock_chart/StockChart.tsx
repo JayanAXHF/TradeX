@@ -47,13 +47,15 @@ const StockChart = () => {
 
   console.log(`JSC ~ file: StockChart.tsx:32 ~ StockChart ~ data:`, series);
   return (
-    <AreaChart
-      options={options as any}
-      series={series}
-      type="area"
-      width={"100%"}
-      height="50%"
-    />
+    <div>
+      <AreaChart
+        options={options as any}
+        series={series}
+        type="area"
+        width={"100%"}
+        height="50%"
+      />
+    </div>
   );
 };
 
