@@ -98,21 +98,21 @@ const SignUp = () => {
         formData?.confirmPassword) !== ""
     ) {
       try {
-       await signUpUser(
+        await signUpUser(
           formData?.email as string,
           formData?.password as string,
           formData?.username as string
         );
+        setFormData({
+          username: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        });
+        router.push("/");
       } catch (error) {
         alert(error);
       }
-      setFormData({
-        username: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      });
-      router.push("/");
     }
   };
 

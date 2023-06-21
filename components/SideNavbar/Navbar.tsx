@@ -85,7 +85,7 @@ export function SideNav() {
   const pathname = usePathname();
 
   const [active, setActive] = useState(0);
-  const { sideNav } = useAppContext();
+  const { sideNav, Logout } = useAppContext();
   const links = mockdata.map((link, index) => (
     <NavbarLink
       {...link}
@@ -100,11 +100,11 @@ export function SideNav() {
 
   return sideNav && pathname !== "/signin" && pathname !== "/signup" ? (
     <Navbar
-      height={"100%"}
+      height={"100vh"}
       width={{ base: 80 }}
       p="md"
       sx={{ position: "fixed", right: 0 }}
-      className="transition-all duration-300 ease-in-out"
+      className="transition-all duration-300 ease-in-out z-"
     >
       <Navbar.Section grow mt={50}>
         <Stack justify="center" spacing={10}>
@@ -114,7 +114,7 @@ export function SideNav() {
       <Navbar.Section>
         <Stack justify="center" spacing={10} mb={75}>
           <NavbarLink icon={IconSettings} label="Settings" />
-          <NavbarLink icon={IconLogout} label="Logout" />
+          <NavbarLink icon={IconLogout} label="Logout" onClick={Logout} />
         </Stack>
       </Navbar.Section>
     </Navbar>

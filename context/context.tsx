@@ -3,8 +3,11 @@ import { auth, db } from "@/firebase";
 import {
   User,
   UserCredential,
+  browserLocalPersistence,
   createUserWithEmailAndPassword,
+  setPersistence,
   signInWithEmailAndPassword,
+  signOut,
   updateProfile,
 } from "firebase/auth";
 import { child, get, ref, set } from "firebase/database";
@@ -17,6 +20,7 @@ import {
   useState,
 } from "react";
 import stockApi from "../api/twelwedata";
+import { useRouter } from "next/navigation";
 
 interface AppContextInterface {
   sideNav: boolean;
@@ -30,17 +34,13 @@ interface AppContextInterface {
   ) => Promise<{
     userCredentials: UserCredential;
   }>;
-  signInUser: (
-    email: string,
-    password: string
-  ) => Promise<{
-    userCredentials: UserCredential;
-  }>;
+  signInUser: (email: string, password: string) => Promise<User>;
   userData: UserData;
   setUserData: Dispatch<SetStateAction<UserData | undefined>>;
   addStock: (stock: Stock) => Promise<void>;
   stockData: any;
   setStockData: Dispatch<any>;
+  Logout: () => Promise<void>;
 }
 
 const AppContext = createContext<any>("");
@@ -67,7 +67,7 @@ interface Stock {
 export const AppProvider = ({ children }: any) => {
   const [sideNav, setSideNav] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
-  const [userData, setUserData] = useState<UserData>({
+  const [userData, setUserData] = useState<UserData | null>({
     stockList: [],
     uid: "",
     username: "",
@@ -92,12 +92,13 @@ export const AppProvider = ({ children }: any) => {
       " ",
       ""
     )}`;
-    await updateProfile(auth.currentUser as User, { displayName: username, photoURL:`https://api.dicebear.com/6.x/identicon/svg?seed=${username.replace(
-      " ",
-      ""
-    )}` }).catch(
-        (err) => console.log(err)
-      );
+    await updateProfile(auth.currentUser as User, {
+      displayName: username,
+      photoURL: `https://api.dicebear.com/6.x/identicon/svg?seed=${username.replace(
+        " ",
+        ""
+      )}`,
+    }).catch((err) => console.log(err));
 
     set(ref(db, "users/" + userCredentials.user.uid), {
       username,
@@ -115,23 +116,36 @@ export const AppProvider = ({ children }: any) => {
     return user;
   };
   const signInUser = async (email: string, password: string) => {
+    setPersistence(auth, browserLocalPersistence);
     const userCredentials = await signInWithEmailAndPassword(
       auth,
       email,
       password
     );
-    console.log(userCredentials.user.uid);
+
+    const user: User = auth.currentUser as User;
 
     const snapshot = await get(
       child(ref(db), `users/${userCredentials.user.uid}`)
     );
     try {
       if (snapshot.exists()) {
-        console.log(snapshot.val());
         setUserData({
-          ...snapshot.val(),
-          uid: userCredentials.user.uid,
+          email: user.email as string,
+          username: user.displayName as string,
+          uid: user.uid as string,
+          profilePicture: user.photoURL as string,
+          stockList: snapshot.val().stockList || ([] as Stock[]),
         });
+        console.debug(
+          console.table({
+            email: user.email as string,
+            username: user.displayName as string,
+            uid: user.uid as string,
+            profilePicture: user.photoURL as string,
+            stockList: snapshot.val().stockList || ([] as Stock[]),
+          })
+        );
       } else {
         console.log("No data available");
       }
@@ -139,23 +153,32 @@ export const AppProvider = ({ children }: any) => {
       console.error(error);
     }
 
-    const user = { userCredentials };
     setLoggedIn(true);
     return user;
   };
-  const formatData = (data: any) => {
-    const formattedData = data.t.map((item: any, i: number) => {
-      return { x: item * 1000, y: data.c[i] };
-    });
 
-    return formattedData;
-  };
-  const getStockDetails = async () => {
-    const date = new Date();
-    const to = Math.floor(date.getTime() / 1000);
-
+  const Logout = async () => {
     try {
-      if (userData.stockList) {
+      await signOut(auth);
+    } catch (error) {
+      useRouter().push("/");
+      alert(error);
+      return;
+    }
+    setLoggedIn(false);
+    setUserData(null);
+  };
+
+  // const formatData = (data: any) => {
+  //   const formattedData = data.t.map((item: any, i: number) => {
+  //     return { x: item * 1000, y: data.c[i] };
+  //   });
+
+  //   return formattedData;
+  // };
+  const getStockDetails = async () => {
+    try {
+      if (userData?.stockList) {
         const res = await Promise.all(
           userData.stockList.map((stock: Stock) => {
             return stockApi.get("/time_series", {
@@ -179,11 +202,11 @@ export const AppProvider = ({ children }: any) => {
     }
   };
 
-  useEffect(() => {
-    if ((userData?.stockList?.length || -1) > 0 && loggedIn) {
-      getStockDetails();
-    }
-  }, [userData?.stockList]);
+  // useEffect(() => {
+  //   if ((userData?.stockList?.length || -1) > 0 && loggedIn) {
+  //     getStockDetails();
+  //   }
+  // }, [userData?.stockList]);
 
   const addStock = async (stock: Stock) => {
     const oldStockList = userData?.stockList as Stock[];
@@ -200,7 +223,7 @@ export const AppProvider = ({ children }: any) => {
     if (userData?.stockList) {
       setUserData({
         ...userData,
-        stockList: [...(userData?.stockList as Stock[]), stock],
+        stockList: [stock, ...(userData?.stockList as Stock[])],
       });
     } else {
       setUserData({ ...userData, stockList: [stock] } as UserData);
@@ -222,6 +245,7 @@ export const AppProvider = ({ children }: any) => {
           addStock,
           stockData,
           setStockData,
+          Logout,
         } as AppContextInterface
       }
     >

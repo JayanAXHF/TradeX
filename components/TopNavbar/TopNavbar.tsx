@@ -19,6 +19,7 @@ import { useDisclosure } from "@mantine/hooks";
 import {
   IconArrowLeft,
   IconArrowRight,
+  IconLogout,
   IconMessageCircle,
   IconSearch,
   IconSettings,
@@ -35,16 +36,9 @@ import { usePathname, useRouter } from "next/navigation";
 import { Item } from "../stockListItem/Item";
 import dataApi from "../../api/twelwedata";
 
-
 /*AutoComplete Imports */
 import { forwardRef } from "react";
-import {
-
-  MantineColor,
-  SelectItemProps,
-  
-} from "@mantine/core";
-
+import { MantineColor, SelectItemProps } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -99,7 +93,7 @@ interface ItemProps extends SelectItemProps {
   country: string;
 }
 
- export const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(
+export const AutoCompleteItem = forwardRef<HTMLDivElement, ItemProps>(
   ({ description, value, country, ...others }: ItemProps, ref) => (
     <div ref={ref} {...others}>
       <Group noWrap>
@@ -114,7 +108,7 @@ interface ItemProps extends SelectItemProps {
   )
 );
 
-AutoCompleteItem.displayName = 'AutoCompleteItem';
+AutoCompleteItem.displayName = "AutoCompleteItem";
 interface Stock {
   country: string;
   currency: string;
@@ -131,7 +125,8 @@ export function TopNavbar() {
   const [isOpen, { open, close }] = useDisclosure(false);
   const [opened, { toggle }] = useDisclosure(false);
   const { classes } = useStyles();
-  const { setSideNav, loggedIn, userData } = useAppContext();
+  const { setSideNav, loggedIn, userData, setStockData, Logout } =
+    useAppContext();
   const [autoCompleteData, setAutoCompleteData] = useState<string[]>([]);
   const [completeList, setCompleteList] = useState<Stock[]>([]);
   const [searchValue, setSearchValue] = useState("");
@@ -141,11 +136,6 @@ export function TopNavbar() {
   useEffect(() => {}, []);
 
   const fetchStocks = async (searchValue: string) => {
-    console.log(
-      `JSC ~ file: TopNavbar.tsx:97 ~ fetchStocks ~ searchValue:`,
-      searchValue
-    );
-
     const res = await Promise.resolve(
       dataApi.get("/symbol_search", {
         params: {
@@ -176,6 +166,18 @@ export function TopNavbar() {
     const res = await fetch(
       `https://api.twelvedata.com/symbol_search?symbol=${stock}&apikey=${process.env.NEXT_PUBLI_TWELWEDATA_API_KEY}`
     );
+    setStockData((prevState: any) => {
+      return [
+        ...prevState,
+        dataApi.get("/time_series", {
+          params: {
+            interval: "1month",
+            symbol: stock,
+            outputsize: 12,
+          },
+        }),
+      ];
+    });
     const data = await res.json();
     console.log(`JSC ~ file: TopNavbar.tsx:124 ~ getStocks ~ data:`, data);
     return data.data;
@@ -191,7 +193,7 @@ export function TopNavbar() {
     <React.Fragment>
       <Header
         height={68}
-        className={classes.header}
+        className={`${classes.header} `}
         mb={120}
         pt={10 / 2}
         pb={10 / 2}
@@ -259,14 +261,7 @@ export function TopNavbar() {
                       variant="filled"
                       onClick={async () => {
                         const tempItem: Stock[] = await getStocks(searchValue);
-                        console.log(
-                          `JSC ~ file: TopNavbar.tsx:196 ~ onClick={ ~ searchValue:`,
-                          searchValue
-                        );
-                        console.log(
-                          `JSC ~ file: TopNavbar.tsx:183 ~ onClick ~ tempItem:`,
-                          await getStocks("apple")
-                        );
+
                         setTempList(tempItem);
                         open();
                       }}
@@ -299,6 +294,10 @@ export function TopNavbar() {
                       className="sm:hidden"
                     >
                       Search
+                    </Menu.Item>
+                    <Menu.Divider />
+                    <Menu.Item icon={<IconLogout size={14} />} onClick={Logout}>
+                      Logout
                     </Menu.Item>
                   </Menu.Dropdown>
                 </Menu>

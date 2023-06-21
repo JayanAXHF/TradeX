@@ -6,7 +6,7 @@ import {
   PasswordInput,
   rem,
 } from "@mantine/core";
-import { useForm } from "@mantine/form";
+
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 import Logo from "../../assets/Logo.svg";
@@ -77,7 +77,6 @@ const Login = () => {
 
     try {
       signInUser(formData?.email, formData?.password);
-      router.push("/");
     } catch (error: any) {
       setAlertDetails({
         show: true,
@@ -85,6 +84,7 @@ const Login = () => {
         title: `Error ${error.code}`,
       });
     }
+    router.push("/");
   }
 
   return (

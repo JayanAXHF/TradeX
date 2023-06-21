@@ -17,13 +17,13 @@ export default function RootLayout({
     <AppProvider>
       <html lang="en-US">
         <head />
-        <body>
-          <RootStyleRegistry>
+        <RootStyleRegistry>
+          <body>
             <SideNav />
             <TopNavbar />
             {children}
-          </RootStyleRegistry>
-        </body>
+          </body>
+        </RootStyleRegistry>
       </html>
     </AppProvider>
   );

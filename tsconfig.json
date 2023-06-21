@@ -28,7 +28,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "firebase.js"
+    "firebase.js",
+    "components/stock_chart/StockChart.jsx"
   ],
   "exclude": ["node_modules"]
 }

@@ -30,5 +30,5 @@ import {
 // );
 
 export default function Idk() {
-  return''
+  return "";
 }
