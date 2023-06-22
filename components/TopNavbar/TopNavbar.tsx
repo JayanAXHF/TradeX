@@ -198,7 +198,6 @@ export function TopNavbar() {
         pt={10 / 2}
         pb={10 / 2}
         px={20}
-        z
       >
         <Modal opened={isOpen} onClose={close} title="Add Stocks" centered>
           {tempList?.map((item: Stock, index: number) => {
