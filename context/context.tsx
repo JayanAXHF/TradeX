@@ -21,6 +21,7 @@ import {
 } from "react";
 import stockApi from "../api/twelwedata";
 import { useRouter } from "next/navigation";
+import { useColorScheme, useDisclosure } from "@mantine/hooks";
 
 interface AppContextInterface {
   sideNav: boolean;
@@ -41,6 +42,11 @@ interface AppContextInterface {
   stockData: any;
   setStockData: Dispatch<any>;
   Logout: () => Promise<void>;
+  opened: boolean;
+  open: () => void;
+  close: () => void;
+  darkMode: boolean;
+  setDarkMode: Dispatch<SetStateAction<boolean>>;
 }
 
 const AppContext = createContext<any>("");
@@ -75,6 +81,10 @@ export const AppProvider = ({ children }: any) => {
     profilePicture: "",
   });
   const [stockData, setStockData] = useState<any>([]);
+  const [opened, { open, close }] = useDisclosure(false);
+  const [darkMode, setDarkMode] = useState<boolean>(
+    useColorScheme() === "dark" ? true : false
+  );
   const signUpUser = async (
     email: string,
     password: string,
@@ -207,6 +217,11 @@ export const AppProvider = ({ children }: any) => {
           stockData,
           setStockData,
           Logout,
+          opened,
+          open,
+          close,
+          darkMode,
+          setDarkMode,
         } as AppContextInterface
       }
     >

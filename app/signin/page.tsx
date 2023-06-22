@@ -40,7 +40,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<string[]>([]);
 
-  const { signInUser } = useAppContext();
+  const { signInUser, darkMode } = useAppContext();
 
   const handleEmailChange = (val: string) => {
     window.clearTimeout(timeoutRef.current);
@@ -90,7 +90,7 @@ const Login = () => {
   }
 
   return (
-    <div>
+    <div className={`${darkMode && "dark"}`}>
       <Head>
         <title>TradeX | Login</title>
       </Head>

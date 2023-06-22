@@ -2,17 +2,23 @@
 
 import { SideNav, TopNavbar } from "@/components";
 import Details from "@/components/details/Details";
+import SettingsModal from "@/components/settingsModal/SettingsModal";
 import StockList from "@/components/stockList/StockList";
 import StockChart from "@/components/stock_chart/StockChart";
 import { useAppContext } from "@/context/context";
 import { AppShell, Grid, MediaQuery } from "@mantine/core";
 
 export default function Home() {
-  const { loggedIn, userData } = useAppContext();
+  const { loggedIn, userData, darkMode } = useAppContext();
 
   return (
-    <AppShell padding="md" header={<TopNavbar />} navbar={<SideNav />}>
-      <div>
+    <div className={`${darkMode && "dark"} dark:bg-[#141518]`}>
+      <AppShell
+        padding="md"
+        header={<TopNavbar />}
+        navbar={<SideNav />}
+        className={`${darkMode && "dark"} dark:bg-[#141518]`}
+      >
         {loggedIn && (userData?.stockList?.length || -1) > 0 && (
           <>
             {/* <div className="grid grid-flow-col ">
@@ -25,18 +31,18 @@ export default function Home() {
               </div>
             </div> */}
             <Grid>
-              <MediaQuery smallerThan={"xl"} styles={{ display: "none" }}>
-                <Grid.Col span={10} className="h-96" sx={{ height: "500px" }}>
-                  <div className="relative">
-                    <StockChart />
-                  </div>
-                </Grid.Col>
-              </MediaQuery>
-              <MediaQuery largerThan={"xl"} styles={{ display: "none" }}>
+              {/* <MediaQuery smallerThan={"xl"} styles={{ display: "none" }}> */}
+              <Grid.Col span={10} className="h-96" sx={{ height: "500px" }}>
+                <div className="relative">
+                  <StockChart />
+                </div>
+              </Grid.Col>
+              {/* </MediaQuery> */}
+              {/* <MediaQuery largerThan={"xl"} styles={{ display: "none" }}>
                 <Grid.Col span={12}>
                   <StockChart />
                 </Grid.Col>
-              </MediaQuery>
+              </MediaQuery> */}
               <MediaQuery smallerThan="xl" styles={{ display: "none" }}>
                 <Grid.Col span={2}>
                   <StockList />
@@ -48,7 +54,8 @@ export default function Home() {
             </Grid>
           </>
         )}
-      </div>
-    </AppShell>
+        <SettingsModal />
+      </AppShell>
+    </div>
   );
 }

@@ -16,7 +16,7 @@ import {
   IconLogout,
   IconHome,
 } from "@tabler/icons-react";
-import Logo from "../../assets/Logo.svg";
+import * as Logo from "../../assets/Logo.svg";
 import Image from "next/image";
 import { useAppContext } from "@/context/context";
 import { usePathname, useRouter } from "next/navigation";
@@ -85,7 +85,7 @@ export function SideNav() {
   const pathname = usePathname();
 
   const [active, setActive] = useState(0);
-  const { sideNav, Logout } = useAppContext();
+  const { sideNav, Logout, open: openDrawer, darkMode } = useAppContext();
   const links = mockdata.map((link, index) => (
     <NavbarLink
       {...link}
@@ -103,7 +103,10 @@ export function SideNav() {
       height={"100vh"}
       width={{ base: 80 }}
       p="md"
-      className="transition-all duration-300 ease-in-out z-"
+      className={
+        "transition-all duration-300 ease-in-out z-" +
+        `${darkMode && "dark"} dark:bg-[#141518] dark:text-white`
+      }
     >
       <Navbar.Section grow mt={50}>
         <Stack justify="center" spacing={10}>
@@ -112,7 +115,11 @@ export function SideNav() {
       </Navbar.Section>
       <Navbar.Section>
         <Stack justify="center" spacing={10} mb={75}>
-          <NavbarLink icon={IconSettings} label="Settings" />
+          <NavbarLink
+            icon={IconSettings}
+            label="Settings"
+            onClick={openDrawer}
+          />
           <NavbarLink icon={IconLogout} label="Logout" onClick={Logout} />
         </Stack>
       </Navbar.Section>

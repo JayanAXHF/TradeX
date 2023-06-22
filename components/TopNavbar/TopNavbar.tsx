@@ -5,7 +5,6 @@ import {
   Header,
   Autocomplete,
   Group,
-  Burger,
   rem,
   Title,
   Avatar,
@@ -20,7 +19,6 @@ import {
   IconArrowLeft,
   IconArrowRight,
   IconLogout,
-  IconMessageCircle,
   IconSearch,
   IconSettings,
   IconUser,
@@ -32,7 +30,7 @@ import { useAppContext } from "@/context/context";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import React from "react";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { Item } from "../stockListItem/Item";
 import dataApi from "../../api/twelwedata";
 
@@ -125,7 +123,7 @@ export function TopNavbar() {
   const [isOpen, { open, close }] = useDisclosure(false);
   const [opened, { toggle }] = useDisclosure(false);
   const { classes } = useStyles();
-  const { setSideNav, loggedIn, userData, setStockData, Logout } =
+  const { setSideNav, loggedIn, userData, setStockData, Logout, darkMode } =
     useAppContext();
   const [autoCompleteData, setAutoCompleteData] = useState<string[]>([]);
   const [completeList, setCompleteList] = useState<Stock[]>([]);
@@ -193,11 +191,14 @@ export function TopNavbar() {
     <React.Fragment>
       <Header
         height={68}
-        className={`${classes.header} `}
+        className={`${classes.header} ${
+          darkMode && "dark"
+        } dark:bg-[#141518] dark:text-gray-50`}
         mb={120}
         pt={10 / 2}
         pb={10 / 2}
         px={20}
+        z
       >
         <Modal opened={isOpen} onClose={close} title="Add Stocks" centered>
           {tempList?.map((item: Stock, index: number) => {

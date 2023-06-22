@@ -1,142 +1,12 @@
 import { useAppContext } from "@/context/context";
-// import React from "react";
-// import {
-//   StockChartComponent,
-//   StockChartSeriesCollectionDirective,
-//   StockChartSeriesDirective,
-//   Inject,
-//   ITooltipRenderEventArgs,
-//   IStockChartEventArgs,
-//   ChartTheme,
-//   DateTime,
-//   Tooltip,
-//   RangeTooltip,
-//   Crosshair,
-//   LineSeries,
-//   SplineSeries,
-//   CandleSeries,
-//   HiloOpenCloseSeries,
-//   HiloSeries,
-//   RangeAreaSeries,
-//   Trendlines,
-// } from "@syncfusion/ej2-react-charts";
-// import {
-//   EmaIndicator,
-//   RsiIndicator,
-//   BollingerBands,
-//   TmaIndicator,
-//   MomentumIndicator,
-//   SmaIndicator,
-//   AtrIndicator,
-//   AccumulationDistributionIndicator,
-//   MacdIndicator,
-//   StochasticIndicator,
-//   Export,
-// } from "@syncfusion/ej2-react-charts";
-
-// const StockChart = () => {
-
-//   if (stockData) {
-//     const data = stockData[0].values.map((item: any) => {
-//       const { open, close, high, low, volume } = item;
-
-//       return {
-//         x: new Date(item.datetime),
-//         open: Number(open),
-//         close: Number(close),
-//         high: Number(high),
-//         low: Number(low),
-//         volume: Number(volume),
-//       };
-//     });
-
-//     const newOptions = { style: "currency", currency: "USD" };
-//     const numberFormat = new Intl.NumberFormat("en-US", newOptions);
-//     console.log(`JSC ~ file: StockChart.tsx:19 ~ StockChart ~ data:`, data);
-
-//     const options = {
-//       title: `${stockData[0].meta.symbol} Stock`,
-//       backgroundColor: "transparent",
-//       annotations: {
-//         textStyle: {
-//           fontName: "Times-Roman",
-//           fontSize: 18,
-//           bold: true,
-//           italic: true,
-//           color: "#871b47",
-//           auraColor: "#d799ae",
-//           opacity: 0.8,
-//         },
-//       },
-//     };
-
-//     return (
-//       <div className="h-96 mt-36 !text-white bg-secondary w-max">
-//         <StockChartComponent
-//           id="stockchart"
-//           primaryXAxis={{
-//             valueType: "DateTime",
-//             majorGridLines: { width: 0 },
-//             majorTickLines: { color: "transparent" },
-//             crosshairTooltip: { enable: true },
-//           }}
-//           primaryYAxis={{
-//             labelFormat: "n0",
-//             lineStyle: { width: 0 },
-//             rangePadding: "None",
-//             majorTickLines: { width: 0 },
-//           }}
-//           height="350"
-//         >
-//           <Inject
-//             services={[
-//               DateTime,
-//               Tooltip,
-//               RangeTooltip,
-//               Crosshair,
-//               LineSeries,
-//               SplineSeries,
-//               CandleSeries,
-//               HiloOpenCloseSeries,
-//               HiloSeries,
-//               RangeAreaSeries,
-//               Trendlines,
-//               EmaIndicator,
-//               RsiIndicator,
-//               BollingerBands,
-//               TmaIndicator,
-//               MomentumIndicator,
-//               SmaIndicator,
-//               AtrIndicator,
-//               Export,
-//               AccumulationDistributionIndicator,
-//               MacdIndicator,
-//               StochasticIndicator,
-//             ]}
-//           />
-//           <StockChartSeriesCollectionDirective>
-//             <StockChartSeriesDirective
-//               dataSource={data}
-//               type="Candle"
-//             ></StockChartSeriesDirective>
-//           </StockChartSeriesCollectionDirective>
-//         </StockChartComponent>
-//       </div>
-//     );
-//   }
-// };
-// export default StockChart;
-
-// TradingViewWidget.jsx
 
 import React, { useEffect, useRef } from "react";
-import StockList from "../stockList/StockList";
 
 let tvScriptLoadingPromise;
 
 export default function TradingViewWidget() {
   const onLoadScriptRef = useRef();
-  const { stockData, userData } = useAppContext();
+  const { stockData, userData, darkMode } = useAppContext();
   console.log(
     `JSC ~ file: StockChart.jsx:139 ~ TradingViewWidget ~ stockData:`,
     stockData
@@ -184,21 +54,23 @@ export default function TradingViewWidget() {
           symbol: stockName,
           interval: "D",
           timezone: "Etc/UTC",
-          theme: "dark",
+          theme: darkMode ? "dark" : "light",
           style: "1",
           locale: "in",
           toolbar_bg: "#27292F",
           enable_publishing: false,
           save_image: true,
           container_id: "tradingview_32309",
-          backgroundColor: "rgba(39, 41, 47, 1)",
+          backgroundColor: !darkMode
+            ? "rgba(255, 255, 255, 1)"
+            : "rgba(39, 41, 47, 1)",
           // watchlist: watchList,
           details: true,
           details_bg: "#27292F",
         });
       }
     }
-  }, [userData.stockList]);
+  }, [userData.stockList, darkMode]);
 
   return (
     <div className="tradingview-widget-container  h-auto block">
@@ -209,7 +81,7 @@ export default function TradingViewWidget() {
           rel="noopener nofollow"
           target="_blank"
         >
-          <span className="blue-text">Track all markets on TradingView</span>
+          <span className="blue-text">Chart Widget By TradingView</span>
         </a>
       </div>
     </div>
