@@ -279,7 +279,7 @@ export function TopNavbar() {
                     <Avatar
                       src={userData.profilePicture}
                       alt="pfp"
-                      className="h-10 w-auto"
+                      className="h-10 w-auto cursor-pointer"
                     />
                   </Menu.Target>
                   <Menu.Dropdown>

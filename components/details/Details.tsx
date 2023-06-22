@@ -1,7 +1,7 @@
 import React from "react";
 
 const Details = () => {
-  return <div>Details</div>;
+  return <div className="sm:mt-[30vh] mt-[20vh]">Details</div>;
 };
 
 export default Details;

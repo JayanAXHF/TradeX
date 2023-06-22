@@ -103,7 +103,6 @@ export function SideNav() {
       height={"100vh"}
       width={{ base: 80 }}
       p="md"
-      sx={{ position: "fixed", right: 0 }}
       className="transition-all duration-300 ease-in-out z-"
     >
       <Navbar.Section grow mt={50}>

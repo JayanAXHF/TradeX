@@ -18,11 +18,7 @@ export default function RootLayout({
       <html lang="en-US">
         <head />
         <RootStyleRegistry>
-          <body>
-            <SideNav />
-            <TopNavbar />
-            {children}
-          </body>
+          <body>{children}</body>
         </RootStyleRegistry>
       </html>
     </AppProvider>

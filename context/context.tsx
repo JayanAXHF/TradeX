@@ -116,19 +116,19 @@ export const AppProvider = ({ children }: any) => {
     return user;
   };
   const signInUser = async (email: string, password: string) => {
-    setPersistence(auth, browserLocalPersistence);
-    const userCredentials = await signInWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-
-    const user: User = auth.currentUser as User;
-
-    const snapshot = await get(
-      child(ref(db), `users/${userCredentials.user.uid}`)
-    );
     try {
+      const userCredentials = await setPersistence(
+        auth,
+        browserLocalPersistence
+      ).then(() => {
+        return signInWithEmailAndPassword(auth, email, password);
+      });
+
+      const user: User = auth.currentUser as User;
+
+      const snapshot = await get(
+        child(ref(db), `users/${userCredentials.user.uid}`)
+      );
       if (snapshot.exists()) {
         setUserData({
           email: user.email as string,
@@ -149,12 +149,12 @@ export const AppProvider = ({ children }: any) => {
       } else {
         console.log("No data available");
       }
+      setLoggedIn(true);
+      return user;
     } catch (error) {
       console.error(error);
+      return;
     }
-
-    setLoggedIn(true);
-    return user;
   };
 
   const Logout = async () => {
@@ -168,45 +168,6 @@ export const AppProvider = ({ children }: any) => {
     setLoggedIn(false);
     setUserData(null);
   };
-
-  // const formatData = (data: any) => {
-  //   const formattedData = data.t.map((item: any, i: number) => {
-  //     return { x: item * 1000, y: data.c[i] };
-  //   });
-
-  //   return formattedData;
-  // };
-  const getStockDetails = async () => {
-    try {
-      if (userData?.stockList) {
-        const res = await Promise.all(
-          userData.stockList.map((stock: Stock) => {
-            return stockApi.get("/time_series", {
-              params: {
-                interval: "1month",
-                symbol: stock.symbol,
-                outputsize: 12,
-              },
-            });
-          })
-        );
-        const data = res.map((item: any, i: number) => {
-          return item.data;
-        });
-        console.log(`JSC ~ file: context.tsx:163 ~ data ~ data:`, data);
-
-        setStockData(data);
-      }
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  // useEffect(() => {
-  //   if ((userData?.stockList?.length || -1) > 0 && loggedIn) {
-  //     getStockDetails();
-  //   }
-  // }, [userData?.stockList]);
 
   const addStock = async (stock: Stock) => {
     const oldStockList = userData?.stockList as Stock[];

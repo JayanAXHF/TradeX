@@ -16,6 +16,7 @@ import Link from "next/link";
 import { useAppContext } from "@/context/context";
 import "./signin.css";
 import { useRouter } from "next/navigation";
+import Head from "next/head";
 
 interface FormData {
   email: string;
@@ -83,12 +84,16 @@ const Login = () => {
         message: error.message,
         title: `Error ${error.code}`,
       });
+      return;
     }
     router.push("/");
   }
 
   return (
     <div>
+      <Head>
+        <title>TradeX | Login</title>
+      </Head>
       <section className="bg-white dark:bg-[#27292f]">
         <div className="lg:grid lg:min-h-screen lg:grid-cols-12">
           <aside className="signin__pattern relative block h-full lg:order-last lg:col-span-5 lg:h-full xl:col-span-6">
