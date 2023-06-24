@@ -79,6 +79,14 @@ const Login = () => {
     try {
       signInUser(formData?.email, formData?.password);
     } catch (error: any) {
+      const { message } = error;
+      if (message === "auth/invalid-password") {
+        setAlertDetails({
+          show: true,
+          message: "Incorrect Password",
+        });
+        return;
+      }
       setAlertDetails({
         show: true,
         message: error.message,

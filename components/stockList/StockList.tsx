@@ -33,14 +33,14 @@ const StockList = () => {
 
   if (userData?.stockList) {
     const dataList = userData?.stockList.map(async (stock) => {
-      const data = fetchData(stock.symbol).then((data) => {
-        return data;
-      });
-      console.log(`JSC ~ file: StockList.tsx:34 ~ dataList ~ dataList:`, data);
+      const data = fetchData(stock.symbol);
+      return data;
     });
+    const List = dataList.map((item) => {
+      return <Item data={item} />;
+    });
+    return <div>{List}</div>;
   }
-
-  return <div>{/* <Item /> */}</div>;
 };
 
 export default StockList;
